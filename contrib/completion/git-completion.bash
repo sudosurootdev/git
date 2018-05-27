@@ -266,9 +266,29 @@ __gitcomp ()
 	case "$cur_" in
 	--*=)
 		;;
+	--no-*)
+		local c i=0 IFS=$' \t\n'
+		for c in $1; do
+			if [[ $c == "--" ]]; then
+				continue
+			fi
+			c="$c${4-}"
+			if [[ $c == "$cur_"* ]]; then
+				case $c in
+				--*=*|*.) ;;
+				*) c="$c " ;;
+				esac
+				COMPREPLY[i++]="${2-}$c"
+			fi
+		done
+		;;
 	*)
 		local c i=0 IFS=$' \t\n'
 		for c in $1; do
+			if [[ $c == "--" ]]; then
+				COMPREPLY[i++]="${2-}--no-...${4-} "
+				break
+			fi
 			c="$c${4-}"
 			if [[ $c == "$cur_"* ]]; then
 				case $c in
